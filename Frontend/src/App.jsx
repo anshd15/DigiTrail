@@ -1,20 +1,30 @@
 import { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from './pages/Home';
-
 import "./App.css";
-
+import TrackingPage from "./pages/Tracking";
+import Home from "./pages/Home";
+import {Toaster} from "react-hot-toast"
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div>
+    <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home setProgress={setProgress} />} />
-        </Routes>
+        <div className="main">
+          <Toaster />
+          <Routes>
+            <Route
+              path="/"
+              element={<Home/>}
+            />
+            <Route
+              path="/track"
+              element={<TrackingPage/>}
+            />
+          </Routes>
+        </div>
       </BrowserRouter>
-    </div>
+    </>
   );
 }
 
