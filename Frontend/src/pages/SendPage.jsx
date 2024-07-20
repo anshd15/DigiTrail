@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 
-const RecievedPage = () => {
+const SendPage = () => {
   return (
     <div className="h-screen flex flex-col">
       <Navbar />
@@ -33,9 +33,16 @@ const RecievedPage = () => {
               </div>
             </div>
             <div className="flex flex-col justify-center w-[50%]  p-2">
-              
-              <button className="btn btn-outline  bg-slate-800 btn-accent mt-4">
-                PRODUCT RECIEVED
+              <span className=" text-lg mb-1 ">Enter next trackpoint ID :</span>
+              <label className="input input-bordered mt-2 input-sm input-accent ">
+                <input
+                  type="text"
+                  className="grow"
+                  placeholder="Click to Enter"
+                />
+              </label>
+              <button className="btn btn-outline bg-slate-800 btn-accent mt-4">
+                PRODUCT SEND FORWARD
               </button>
             </div>
           </div>
@@ -45,4 +52,4 @@ const RecievedPage = () => {
   );
 };
 
-export default RecievedPage;
+export default SendPage;
