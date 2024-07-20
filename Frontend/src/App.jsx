@@ -1,22 +1,40 @@
 import { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import RecievedPage from "./pages/RecievedPage";
-import SendPage from "./pages/SendPage";
-
 import "./App.css";
-
+import TrackingPage from "./pages/Tracking";
+import Home from "./pages/Home";
+import SendPage from "./pages/SendPage";
+import RecievedPage from "./pages/RecievedPage";
+import {Toaster} from "react-hot-toast"
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <div>
+    <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/recieve" element={<RecievedPage />} />
-          <Route path="/send" element={<SendPage />} />
-        </Routes>
+        <div className="main">
+          <Toaster />
+          <Routes>
+            <Route
+              path="/send"
+              element={<SendPage/>}
+            />
+            <Route
+              path="/recieved"
+              element={<RecievedPage/>}
+            />
+            <Route
+              path="/"
+              element={<Home/>}
+            />
+            <Route
+              path="/track"
+              element={<TrackingPage/>}
+            />
+          </Routes>
+        </div>
       </BrowserRouter>
-    </div>
+    </>
   );
 }
 
