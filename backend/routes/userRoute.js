@@ -5,7 +5,8 @@ const {
   createTokenAssetOnChain,
   makePayment,
   createProductOrder,
-  sendAssetToken
+  sendAssetToken,
+  verifyQR
 } = require('../controllers/userController');
 const userRouter = express.Router();
 
@@ -15,6 +16,7 @@ userRouter
   .post('/set-data', setAccountDataOnChain)
   .post('/create-asset', createTokenAssetOnChain)
   .post('/make-payment', makePayment)
-  .post('/send-token', sendAssetToken);
+  .post('/send-token', sendAssetToken)
+  .post('/verify-qr', verifyQR);
 
 module.exports = userRouter;

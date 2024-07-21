@@ -6,21 +6,24 @@ const server = new DiamSdk.Horizon.Server('https://diamtestnet.diamcircle.io');
 
 const createProductOrder = async (req, res) => {
   try {
-    const { title, desc, images, token_name } = req.body;
+    const { title, desc, token_name, last_track_point, next_track_point } =
+      req.body;
     // Create a token asset using diamante API
-    // const newAssetResp = await axios.post('/api/user/create-asset', {
-    //   token_name,
-    //   no_of_tokens
-    // });
+    const newAssetResp = await axios.post('/api/user/create-asset', {
+      token_name
+    });
 
     const seller = req.userId;
     const product = new Product({
       title,
       desc,
-      images,
       seller,
-      token_name
+      token_name,
+      last_track_point
     });
+
+    product.track.push({ track_point: seller });
+    product.trustlines.push(next_track_point);
 
     const savedProduct = await product.save();
 
@@ -29,11 +32,45 @@ const createProductOrder = async (req, res) => {
     await user.save();
 
     res.status(200).json({
-      result: property,
+      result: product,
       message: 'Product order created successfully'
     });
   } catch (error) {
     console.error('Error creating product order:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const verifyQR = async (req, res) => {
+  try {
+    const { productId, next_track_point } = req.body;
+    const product = await Product.findById(productId);
+    if (product.status === 'completed') {
+      return res.status(400).json({ error: 'Product order already completed' });
+    }
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    // check the user is authorized to verify the product
+    const checkTL = product.trustlines.find(
+      trustline => trustline === req.userId
+    );
+    if (!checkTL) {
+      return res
+        .status(401)
+        .json({ error: 'Unauthorized to verify the product' });
+    }
+    // update the product track
+    product.track.push({ track_point: req.userId });
+    if (product.last_track_point !== req.userId) {
+      product.trustlines.push(next_track_point);
+      await product.save();
+    } else {
+      product.status = 'completed';
+      await product.save();
+    }
+  } catch (error) {
+    console.error('Error verifying QR');
     res.status(500).json({ error: error.message });
   }
 };
@@ -97,12 +134,9 @@ const createTokenAssetOnChain = async (req, res) => {
     // Create a distributor account
     const distributorKeypair = DiamSdk.Keypair.random();
     console.log('dist:', distributorKeypair.publicKey());
-    const fund = await axios.post(
-      'http://localhost:4000/api/auth/fund-account',
-      {
-        public_address: distributorKeypair.publicKey()
-      }
-    );
+    const fund = await axios.post(`/api/auth/fund-account`, {
+      public_address: distributorKeypair.publicKey()
+    });
     user.distribution_address = distributorKeypair.publicKey();
     user.distribution_secret_key = distributorKeypair.secret();
     await user.save();
@@ -257,5 +291,6 @@ module.exports = {
   makePayment,
   setAccountDataOnChain,
   createTokenAssetOnChain,
-  sendAssetToken
+  sendAssetToken,
+  verifyQR
 };
