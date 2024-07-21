@@ -103,7 +103,7 @@ const Signup = ({ setProgress }) => {
 
 							<button
 								className='btn bg-cyan-500 hover:bg-cyan-600 text-black'
-								onClick={() => navigate('/')}
+								onClick={() => navigate('/create-order')}
 							>
 								Proceed
 							</button>

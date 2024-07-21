@@ -20,7 +20,7 @@ const Login = ({ setProgress }) => {
 			setProgress(60);
 			localStorage.setItem('access_token', resp.data.access_token);
 			localStorage.setItem('public_address', resp.data.result.public_address);
-			navigate('/');
+			navigate('/create-order');
 			toast.success('User logged in successfully 🎉');
 		} catch (error) {
 			console.error(error);
